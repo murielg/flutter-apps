@@ -39,9 +39,9 @@ class ButtonState extends State<MaterialButton> {
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              new Text(mDisplayMessage),
+              new Text(mDisplayMessage, style: new TextStyle(fontSize: 15.0, color: Colors.deepOrangeAccent),),
               new RaisedButton(
-                child: new Text("Show Data"),
+                child: new Text("Show Data", style: new TextStyle(color: Colors.white, fontWeight: FontWeight.bold )),
                 color: Colors.blueAccent,
                 onPressed: onBtnPressed
               )
