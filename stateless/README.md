@@ -1,8 +1,10 @@
 # stateless
 
-A new Flutter project.
+Stateless Widget example using:
 
-## Getting Started
+- List View
+- Card
+- Icons
+- Text
 
-For help getting started with Flutter, view our online
-[documentation](http://flutter.io/).
+<img src="https://github.com/murielg/flutter-apps/blob/master/stateless/stateless-MainActivity-08202017165910.png?raw=true" width="640">
