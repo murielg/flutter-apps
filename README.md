@@ -8,9 +8,7 @@ Flutter SDK Basic apps and examples
 
 - Run `flutter doctor` 
 
-- `flutter create hello_flutter`
-
-- `cd hello_flutter`
+- `cd` into folder
 
 - `flutter run` or `flutter run -d <deviceId>` if you have more than one device plugged in
 
