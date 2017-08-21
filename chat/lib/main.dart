@@ -35,13 +35,30 @@ class ChatScreenState extends State<ChatScreen> {
   Widget _buildTextComposer() {
     return new Container(
       margin: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: new TextField(
-        controller: _textController,
-        onSubmitted: _handleSubmitted,
-        decoration: new InputDecoration.collapsed(
-            hintText: "Send a message"
-        ),
-      ),
+      child: new Row(
+       children: <Widget>[
+         new Flexible (
+          child: new TextField(
+            controller: _textController,
+            onSubmitted: _handleSubmitted,
+            decoration: new InputDecoration.collapsed(
+                hintText: "Send a message"
+              )
+          )
+         ),
+         new Container(
+           margin: new EdgeInsets.symmetric(horizontal: 4.0),
+           child: new IconButton(
+               icon: new Icon(Icons.send, color: Colors.lightBlueAccent,),
+               /*
+               *  In Dart syntax, the fat arrow function declaration
+               *  => expression is shorthand for { return expression; }.
+               */
+               onPressed: () => _handleSubmitted(_textController.text)
+           ),
+         )
+       ]
+      )
     );
   }
 
