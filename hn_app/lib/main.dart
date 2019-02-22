@@ -10,9 +10,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.deepOrange,
       ),
-      home: MyHomePage(title: 'Demo'),
+      home: MyHomePage(title: 'HN Demo'),
     );
   }
 }
@@ -35,9 +35,18 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: new ListView(
-          children: _articles.map(_buildItem).toList()
-        ),
+      body: new RefreshIndicator(
+        child: new ListView(
+            children: _articles.map(_buildItem).toList()
+          ),
+        onRefresh: () async {
+          await new Future.delayed(const Duration(seconds: 1));
+          setState(() {
+            _articles.shuffle();
+          });
+
+        },
+      ),
     );
   }
 
@@ -48,12 +57,26 @@ class _MyHomePageState extends State<MyHomePage> {
             child:
             new Padding(
                 padding: EdgeInsets.all(0.0),
-                child: new ListTile(
+                child: new ExpansionTile(
                   title: new Text(article.text),
-                  subtitle: new Text("${article.commentsCount} comments"),
-                  onTap: () {
-                    _launchURL(article.domain);
-                  },
+                  children: <Widget>[
+                    new Row (
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                      new Text("${article.commentsCount} comments"),
+                      new IconButton(
+                        icon: new Icon(Icons.open_in_browser),
+                        color: Colors.deepOrangeAccent,
+                          onPressed: () {
+                            _launchURL(article.domain);
+                          },
+                      )
+                    ],
+                    )
+
+                  ],
+                  
+
                 )
             ),
           )
