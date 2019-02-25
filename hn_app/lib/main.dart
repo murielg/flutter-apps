@@ -52,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildItem(Article article) {
       return new Row (
+        key: Key(article.text),
         children: <Widget>[
           Expanded(
             child:
