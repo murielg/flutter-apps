@@ -20,7 +20,7 @@ Map<String, dynamic> _$ArticleToJson(Article instance) => <String, dynamic>{
       'text': instance.text,
       'domain': instance.domain,
       'by': instance.by,
-      'age': instance.age,
+      'age': instance.time,
       'score': instance.score,
       'commentsCount': instance.commentsCount
     };

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hn_app/json_parsing.dart';
+import 'package:hn_app/src/article.dart';
 
 void main() {
   test("parses topstories", (){
@@ -9,7 +9,7 @@ void main() {
 
   });
 
-  test("parses item", (){
+  test("parses article", (){
     const jsonString = """ 
     {
       "by" : "dhouston",
@@ -24,7 +24,7 @@ void main() {
     }
     """;
 
-    expect(parseItem(jsonString).by, "dhouston" );
+    expect(parseArticle(jsonString).by, "dhouston" );
 
   });
 
