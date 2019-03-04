@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hn_app/src/article.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   test("parses topstories", (){
@@ -15,14 +17,34 @@ void main() {
       "title" : "My YC app: Dropbox - Throw away your USB drive",
       "domain" : "http://www.getdropbox.com/u/2/screencast.html",
       "by" : "dhouston",
-      "time" : "3 hours",
+      "time" : 1175714200,
       "commentsCount" : 71,
       "score" : 104
-   
     }
     """;
 
     expect(parseArticle(jsonString).by, "dhouston" );
+
+  });
+
+  test("parse item over network", () async {
+    final BASE_URL ='https://hacker-news.firebaseio.com/v0/topstories.json';
+    var client = new http.Client();
+    final res = await client.get(BASE_URL);
+
+
+    if (res.statusCode == 200) {
+      final topStoriesList = json.decode(res.body);
+      if (topStoriesList.isNotEmpty) {
+        final storyUrl = 'https://hacker-news.firebaseio.com/v0/item/${topStoriesList.first}.json';
+        final storyRes = await http.get(storyUrl);
+        if (res.statusCode == 200) {
+          expect(parseArticle(storyRes.body).by, "reverse");
+        }
+      }
+
+    }
+
 
   });
 
