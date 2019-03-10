@@ -34,18 +34,17 @@ void main() {
 
 
     if (res.statusCode == 200) {
-      final topStoriesList = json.decode(res.body);
+      final topStoriesList = parseTopStories(res.body);
       if (topStoriesList.isNotEmpty) {
         final storyUrl = 'https://hacker-news.firebaseio.com/v0/item/${topStoriesList.first}.json';
         final storyRes = await http.get(storyUrl);
         if (res.statusCode == 200) {
-          expect(parseArticle(storyRes.body).by, "reverse");
+          expect(parseArticle(storyRes.body), isNotNull);
         }
       }
 
     }
 
-
-  });
+  }, timeout: Timeout(Duration(seconds:3)), skip: true);
 
 }

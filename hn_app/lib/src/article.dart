@@ -22,6 +22,10 @@ class Article {
   @JsonKey(name: 'deleted', nullable: true)
   bool deleted;
 
+  /// This is the type of the article
+  ///
+  /// "job", "story", "comment", "poll", or "pollopt"
+
   @JsonKey(name: 'type', nullable: true)
   String type;
 

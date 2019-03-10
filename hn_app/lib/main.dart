@@ -1,11 +1,21 @@
+import 'dart:collection';
 import 'package:flutter/material.dart';
-import 'src/article.dart';
+import 'package:hn_app/src/hn_bloc.dart';
+import 'package:hn_app/src/article.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart' as http;
 
-void main() => runApp(MyApp());
+void main() async {
+  final hnBloc = HackerNewsBloc();
+  runApp(MyApp(bloc: hnBloc));
+}
 
 class MyApp extends StatelessWidget {
+  final HackerNewsBloc bloc;
+  MyApp({
+    Key key,
+    this.bloc
+  }) : super (key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,13 +23,20 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
-      home: MyHomePage(title: 'HN Demo'),
+      home: MyHomePage(
+        title: 'HN Demo',
+        bloc: bloc
+      ),
     );
   }
 }
 
+
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+
+  final HackerNewsBloc bloc;
+
+  MyHomePage({Key key, this.title, this.bloc}) : super(key: key);
 
   final String title;
 
@@ -28,92 +45,58 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<int> _ids = [
-  19264048,
-  19263814,
-  19264483,
-  19263649,
-  19265061,
-  19265975,
-  19264154,
-  19264205,
-  19265377,
-  19257888
-  ];
-
-  Future<Article> _getArticle(int id) async {
-    final storyUrl = 'https://hacker-news.firebaseio.com/v0/item/$id.json';
-    final storyRes = await http.get(storyUrl);
-    if (storyRes.statusCode == 200) {
-      return parseArticle(storyRes.body);
-    }
-  }
-
+  
+  
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: RefreshIndicator(
-        child: ListView(
-            children: _ids.map(
-                (id) => FutureBuilder<Article>(
-                  future: _getArticle(id),
-                  builder: (BuildContext context, AsyncSnapshot<Article> article) {
-                    if (article.connectionState == ConnectionState.done) {
-                      return _buildItem(article.data);
-                    } else {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                  },
-                )
-            ).toList()
-          ),
-        onRefresh: () async {
-          await new Future.delayed(const Duration(seconds: 1));
-          setState(() {
-            _ids.shuffle();
-          });
-
-        },
+      body: StreamBuilder<UnmodifiableListView<Article>>(
+        stream: widget.bloc.articles,
+        initialData: UnmodifiableListView<Article>([]),
+        builder: (context, snapshot) => ListView(
+          children: snapshot.data.map(_buildItem).toList(),
+        )
       ),
     );
   }
 
   Widget _buildItem(Article article) {
-      return new Row (
-        key: Key(article.id.toString()),
-        children: <Widget>[
-          Expanded(
-            child:
-            new Padding(
-                padding: EdgeInsets.all(0.0),
-                child: new ExpansionTile(
-                  title: new Text(article.title ?? null),
-                  children: <Widget>[
-                    new Row (
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                      new Text("${article.descendants} comments") ?? null,
-                      new IconButton(
-                        icon: new Icon(Icons.open_in_browser),
+    return Row(
+      key: Key(article.id.toString()),
+      children: <Widget>[
+        Expanded(
+          child:
+          Padding(
+              padding: EdgeInsets.all(0.0),
+              child: ExpansionTile(
+                title: Text(article.title ?? null),
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Text("${article.descendants} comments") ?? null,
+                      IconButton(
+                        icon: Icon(Icons.open_in_browser),
                         color: Colors.deepOrangeAccent,
-                          onPressed: () {
-                            _launchURL(article.url);
-                          },
+                        onPressed: () {
+                          _launchURL(article.url);
+                        },
                       )
                     ],
-                    )
+                  )
 
-                  ],
-                  
+                ],
 
-                )
-            ),
-          )
-        ],
-      );
+
+              )
+          ),
+        )
+      ],
+    );
   }
 
 }
