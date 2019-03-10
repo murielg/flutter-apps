@@ -75,11 +75,10 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         onTap: (index) {
           if (index == 0) {
-            print('Top Stories');
+            widget.bloc.storiesType.add(StoriesType.topStories);
+          } else {
+            widget.bloc.storiesType.add(StoriesType.newStories);
           }
-
-          else
-            print('New Stories');
         },
       ),
     );
