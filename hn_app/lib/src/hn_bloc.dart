@@ -32,6 +32,8 @@ class HackerNewsBloc {
 
   Stream<UnmodifiableListView<Article>> get articles => _articlesSubject.stream;
 
+
+
   Future<Null> _updateArticles() async {
     final futureArticles = _ids.map((id) => _getArticle(id));
 
