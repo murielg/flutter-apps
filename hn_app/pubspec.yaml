@@ -25,6 +25,8 @@ dependencies:
 
   rxdart: 0.21.0
 
+  font_awesome_flutter: 8.4.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

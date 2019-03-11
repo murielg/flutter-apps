@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:hn_app/src/hn_bloc.dart';
 import 'package:hn_app/src/article.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:async';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() async {
   final hnBloc = HackerNewsBloc();
@@ -46,13 +48,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   
-  
+  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        leading: LoadingInfo(widget.bloc.isLoading)
       ),
       body: StreamBuilder<UnmodifiableListView<Article>>(
         stream: widget.bloc.articles,
@@ -62,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
         )
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1,
+        currentIndex: _currentIndex,
           items: [
             BottomNavigationBarItem(
                 title: Text('Top Stories'),
@@ -79,6 +83,9 @@ class _MyHomePageState extends State<MyHomePage> {
           } else {
             widget.bloc.storiesType.add(StoriesType.newStories);
           }
+          setState(() {
+            _currentIndex = index;
+          });
         },
       ),
     );
@@ -119,6 +126,22 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+}
+class LoadingInfo extends StatelessWidget {
+  Stream<bool> _isLoading;
+  LoadingInfo(this._isLoading);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: _isLoading,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        //if (snapshot.hasData && snapshot.data) {
+          return Icon(FontAwesomeIcons.hackerNews);
+        //}
+        //return Container();
+      });
+  }
 }
 
 _launchURL(String domain) async {
