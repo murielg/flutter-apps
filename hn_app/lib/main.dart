@@ -127,17 +127,39 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 }
-class LoadingInfo extends StatelessWidget {
+class LoadingInfo extends StatefulWidget {
   Stream<bool> _isLoading;
+
   LoadingInfo(this._isLoading);
+
+  @override
+  State<StatefulWidget> createState() => LoadingInfoState();
+}
+
+class LoadingInfoState extends State<LoadingInfo> with TickerProviderStateMixin {
+
+  AnimationController _controller;
+
+  @override
+  void initState() {
+    _controller = AnimationController(
+        vsync: this,
+        duration: Duration(seconds: 1)
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: _isLoading,
+      stream: widget._isLoading,
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         //if (snapshot.hasData && snapshot.data) {
-          return Icon(FontAwesomeIcons.hackerNews);
+        _controller.forward().then((f) => _controller.reverse());
+
+          return FadeTransition(
+              opacity: _controller,
+              child: Icon(FontAwesomeIcons.asterisk)
+          );
         //}
         //return Container();
       });
